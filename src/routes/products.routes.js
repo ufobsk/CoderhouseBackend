@@ -44,8 +44,29 @@ productRouter.update("/:id", async (req, res) => {
   const { id } = req.params;
   const { title, description, stock, code, price, category } = req.body;
   try {
-    
+    const respuesta = await productModel.findByIdAndUpdate(id, {
+      title,
+      description,
+      stock,
+      code,
+      price,
+      category,
+    });
+    res.status(200).send({ resultado: "OK", message: respuesta });
   } catch (error) {
     res.status(400).send({ error: `Error al consultar producto: ${error}` });
   }
 });
+
+productRouter.delete("/:id", async (req, res) => {
+  const { id } = req.params;
+  const { title, description, stock, code, price, category } = req.body;
+  try {
+    const respuesta = await productModel.findById(id);
+    res.status(200).send({ resultado: "OK", message: respuesta });
+  } catch (error) {
+    res.status(400).send({ error: `Error al consultar producto: ${error}` });
+  }
+});
+
+export default productRouter;
