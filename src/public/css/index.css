@@ -1,0 +1,14 @@
+nav {
+    text-align: center;
+}
+
+.product-container {
+    width: 400px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid black;
+    background-color: bisque;
+}
+
+footer {
+    text-align: center;
+}
