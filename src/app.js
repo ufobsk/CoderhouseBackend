@@ -15,7 +15,7 @@ import productRouter from "./routes/products.routes.js";
 import cartRouter from "./routes/carts.routes.js";
 import messageRouter from "./routes/messages.routes.js";
 
-import ProductManager from "./controllers/ProductManager.js";
+//import ProductManager from "./controllers/ProductManager.js";
 
 
 //Inicializar el servidor
@@ -23,7 +23,7 @@ const app = express();
 //Creacion del puerto
 const PORT = 4000;
 
-const productManager = new ProductManager();
+// const productManager = new ProductManager();
 
 //Server
 const server = app.listen(PORT, () => {
@@ -48,7 +48,7 @@ app.use("/api/products", productRouter);
 
 
 mongoose
-  .connect("URL DE MONGODB ATLAS")
+  .connect('mongodb+srv://igoico10:ufobsk27@cluster0.ukfhb57.mongodb.net/?retryWrites=true&w=majority')
   .then(() => console.log("BDD conectada"))
   .catch((error) => console.log(`Error en la conexión a MongoDB Atlas: ${error}`));
 

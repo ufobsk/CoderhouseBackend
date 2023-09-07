@@ -1,20 +1,25 @@
-import { Schema, model } from "mongoose";
-
-//MODELO DE CARRITO
+import { Schema, model } from 'mongoose';
 
 const cartSchema = new Schema({
-  products: [{
-    id_prod: {
-        type: Schema.Types.ObjectId, //Id autogenerado de MongoDB
-        ref: 'products',
-        required: true
-    },
-    quantity: {
-        type: Number,
-        required: true //default: 1
-    }
-  }]  
-})
+	products: {
+		type: [
+			{
+				id_prod: {
+					type: Schema.Types.ObjectId, // tipo id autogenerado de mongoDb
+					ref: 'products',
+					required: true,
+				},
+				quantity: {
+					type: Number,
+					required: true,
+				},
+			},
+		],
+		default: function () {
+			return [];
+		},
+	},
+});
+const cartModel = model('carts', cartSchema);
 
-const cartModel = model('carts', cartSchema)
-export default cartModel = model()
+export default cartModel;

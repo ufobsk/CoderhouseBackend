@@ -84,7 +84,7 @@ productRouter.post("/", async (req, res) => {
   } catch (error) {}
 });
 
-productRouter.update("/:id", async (req, res) => {
+productRouter.put("/:id", async (req, res) => {
   const { id } = req.params;
   const { title, description, stock, code, price, category } = req.body;
   try {
