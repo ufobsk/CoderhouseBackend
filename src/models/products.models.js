@@ -32,7 +32,7 @@ const productSchema = new Schema({
     requiered: true,
     unique: true,
   },
-  thumbnails: [],
+  thumbnail: [],
 });
 
 
