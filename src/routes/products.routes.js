@@ -81,7 +81,9 @@ productRouter.post("/", async (req, res) => {
       price,
     });
     res.status(200).send({ resultado: "OK", message: respuesta });
-  } catch (error) {}
+  } catch (error) {
+    res.status(400).send({ error: `Error al crear producto: ${error}` });
+  }
 });
 
 productRouter.put("/:pid", async (req, res) => {

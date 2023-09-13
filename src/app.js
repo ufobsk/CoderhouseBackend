@@ -44,9 +44,6 @@ app.set('views', path.resolve(__dirname, './views'));
 
 
 
-app.use("/api/products", productRouter);
-
-
 mongoose
   .connect('mongodb+srv://igoico10:ufobsk27@cluster0.ukfhb57.mongodb.net/?retryWrites=true&w=majority')
   .then(() => console.log("BDD conectada"))
@@ -97,10 +94,24 @@ app.get('/static/realtimeproducts', (req, res) => {
   });
 });
 
-  app.get('/static/chat', (req, res) => {
+app.get('/static/chat', (req, res) => {
     res.render('chat', {
       rutaCSS: 'chat',
       rutaJS: 'chat',
+  });
+});
+
+app.get('/static/products', (req, res) => {
+  res.render('products', {
+    rutaCSS: 'products',
+    rutaJS: 'products',
+  });
+});
+
+app.get('/static/carts/:cid', (req, res) => {
+  res.render('carts', {
+    rutaCSS: 'carts',
+    rutaJS: 'carts',
   });
 });
 

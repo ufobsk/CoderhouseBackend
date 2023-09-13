@@ -10,7 +10,7 @@ const productSchema = new Schema({
   },
   description: {
     type: String,
-    requiered: true,
+    required: true,
   },
   price: {
     type: Number,
@@ -18,11 +18,11 @@ const productSchema = new Schema({
   },
   stock: {
     type: Number,
-    requiered: true,
+    required: true,
   },
   category: {
     type: String,
-    requiered: true,
+    required: true,
   },
   status: {
     type: Boolean,
@@ -30,7 +30,7 @@ const productSchema = new Schema({
   },
   code: {
     type: String,
-    requiered: true,
+    required: true,
     unique: true,
   },
   thumbnail: [],
