@@ -2,7 +2,6 @@ import { Router } from "express";
 //import ProductManager from "../controllers/ProductManager.js";
 import productModel from "../models/products.models.js";
 
-
 const productRouter = Router();
 // const productManager = new ProductManager();
 
@@ -44,14 +43,25 @@ const productRouter = Router();
 
 // export default routerProd;
 
-
-
-
 //IMPLEMENTACION EN MONGO DB
 productRouter.get("/", async (req, res) => {
-  const { limit } = req.query;
+  const { limit, page, sort, category, status } = req.query;
+  let sortOption;
+  sort == "asc" && (sortOption = "price");
+  sort == "desc" && (sortOption = "-price");
+
+  const options = {
+    limit: limit || 10,
+    page: page || 1,
+    sort: sortOption || null,
+  };
+
+  const query = {};
+  category && (query.category = category);
+  status && (query.status = status);
+
   try {
-    const prods = await productModel.find().limit(limit);
+    const prods = await productModel.paginate(query, options);
     res.status(200).send({ resultado: "OK", message: prods });
   } catch (error) {
     res.status(400).send({ error: `Error al consultar productos: ${error}` });
@@ -62,8 +72,9 @@ productRouter.get("/:pid", async (req, res) => {
   const { pid } = req.params;
   try {
     const prod = await productModel.findById(pid);
-    if (prod) res.status(200).send({ resultado: "OK", message: prod });
-    else res.status(404).send({ resultado: "Not Found", message: prod });
+    prod
+      ? res.status(200).send({ resultado: "OK", message: prod })
+      : res.status(404).send({ resultado: "Not Found", message: prod });
   } catch (error) {
     res.status(400).send({ error: `Error al consultar producto: ${error}` });
   }
@@ -90,7 +101,7 @@ productRouter.put("/:pid", async (req, res) => {
   const { pid } = req.params;
   const { title, description, stock, code, price, category, status } = req.body;
   try {
-    const respuesta = await productModel.findByIdAndUpdate(pid, {
+    const prod = await productModel.findByIdAndUpdate(pid, {
       title,
       description,
       category,
@@ -99,8 +110,8 @@ productRouter.put("/:pid", async (req, res) => {
       price,
     });
     prod
-    ? res.status(200).send({ resultado: 'OK', message: prod })
-    : res.status(404).send({ resultado: 'Not Found', message: prod })
+      ? res.status(200).send({ resultado: "OK", message: prod })
+      : res.status(404).send({ resultado: "Not Found", message: prod });
   } catch (error) {
     res.status(400).send({ error: `Error al consultar producto: ${error}` });
   }
@@ -111,8 +122,8 @@ productRouter.delete("/:pid", async (req, res) => {
   try {
     const prod = await productModel.findByIdAndDelete(pid);
     prod
-    ? res.status(200).send({ resultado: 'OK', message: prod })
-    : res.status(404).send({ resultado: 'Not Found', message: prod});
+      ? res.status(200).send({ resultado: "OK", message: prod })
+      : res.status(404).send({ resultado: "Not Found", message: prod });
   } catch (error) {
     res.status(400).send({ error: `Error al eliminar producto: ${error}` });
   }
