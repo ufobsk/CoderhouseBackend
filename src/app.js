@@ -52,8 +52,7 @@ function auth(req, res, next) {
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(cookieParser(process.env.SIGNED_COOKIE));
-app.use(
-  session({
+app.use(session({
     secret: procces.env.SESSION_SECRET,
     resave: true,
     saveUninitialized: true,
@@ -68,7 +67,7 @@ app.set('views', path.resolve(__dirname, './views'));
 
 //Conexion a base de datos
 mongoose
-  .connect('mongodb+srv://igoico10:ufobsk27@cluster0.ukfhb57.mongodb.net/?retryWrites=true&w=majority')
+  .connect(process.env.MONGO_URL)
   .then(() => console.log("BDD conectada"))
   .catch((error) => console.log(`Error en la conexión a MongoDB Atlas: ${error}`));
 
