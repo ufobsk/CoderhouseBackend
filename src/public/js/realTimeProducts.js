@@ -1,25 +1,25 @@
 const socket = io();
 
-const form = document.querySelector('#formProduct');
-const productsContainer = document.querySelector('#products-container');
+const form = document.querySelector("#formProduct");
+const productsContainer = document.querySelector("#products-container");
 
-socket.emit('load');
+socket.emit("load");
 
-form.addEventListener('submit', event => {
-	event.preventDefault();
-	const dataForm = new FormData(event.target);
-	const product = Object.fromEntries(dataForm);
-	Swal.fire({
-		title: 'Producto creado',
-	});
+form.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const dataForm = new FormData(event.target);
+  const product = Object.fromEntries(dataForm);
+  Swal.fire({
+    title: "Producto creado",
+  });
 
-	socket.emit('newProduct', product);
+  socket.emit("newProduct", product);
 });
 
-socket.on('products', products => {
-	productsContainer.innerHTML = '';
-	products.forEach(prod => {
-		productsContainer.innerHTML += `
+socket.on("products", (products) => {
+  productsContainer.innerHTML = "";
+  products.forEach((prod) => {
+    productsContainer.innerHTML += `
     <div class="product-container">
       <p>Title: ${prod.title}</p>
       <p>Description: ${prod.description}</p>
@@ -32,5 +32,5 @@ socket.on('products', products => {
     </div>
   
     `;
-	});
+  });
 });

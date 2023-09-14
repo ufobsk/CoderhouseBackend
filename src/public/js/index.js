@@ -4,9 +4,10 @@ const productsContainer = document.querySelector("#products-container");
 
 socket.emit("load");
 
-socket.on("products", (products) => {
+socket.on("products", data => {
+  const products = data.docs;
   productsContainer.innerHTML = "";
-  products.forEach((prod) => {
+  products.forEach(prod => {
     productsContainer.innerHTML += `
         <div class="product-container">
         <p>Title: ${prod.title}</p>

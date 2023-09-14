@@ -1,21 +1,21 @@
 const socket = io();
 
-const productsContainer = document.querySelector('#products-container');
-const pageNumber = document.querySelector('#page-number');
-const previousButton = document.querySelector('#pre-page-button');
-const nextButton = document.querySelect('#next-page-button');
+const productsContainer = document.querySelector("#products-container");
+const pageNumber = document.querySelector("#page-number");
+const previousButton = document.querySelector("#pre-page-button");
+const nextButton = document.querySelect("#next-page-button");
 
 let page;
 let cartId;
 
-socket.emit('load');
+socket.emit("load");
 
-socket.on('products', data => {
-    const products = data.docs;
-    productsContainer.innerHTML = '';
-    products.forEach(prod => {
-        pid = prod._id;
-		productsContainer.innerHTML += `
+socket.on("products", (data) => {
+  const products = data.docs;
+  productsContainer.innerHTML = "";
+  products.forEach((prod) => {
+    pid = prod._id;
+    productsContainer.innerHTML += `
     <div class="product-container">
 			<div class="data-container">
       <p>Title: ${prod.title}</p>
@@ -32,35 +32,39 @@ socket.on('products', data => {
 
     </div>
     `;
-    });
-    page = data.page;
-    pageNumber.innerText = page;
-    !data.hasPrevPage ? (previousButton.disabled = true) : (previousButton.disabled = false);
-    !data.hasNextPage ? (nextButton.disabled = true) : (nextButton.disabled = false);
+  });
+  page = data.page;
+  pageNumber.innerText = page;
+  !data.hasPrevPage
+    ? (previousButton.disabled = true)
+    : (previousButton.disabled = false);
+  !data.hasNextPage
+    ? (nextButton.disabled = true)
+    : (nextButton.disabled = false);
 
-    const addButtons = document.querySelectorAll('.add-button');
-    addButtons.forEach(button => {
-        button.addEventListener('click', e => {
-            const pid = e.target.dispatchEvent;
-            const data = { pid, cartId };
-            socket.emit('addProduct', data);
-        });
+  const addButtons = document.querySelectorAll(".add-button");
+  addButtons.forEach((button) => {
+    button.addEventListener("click", (e) => {
+      const pid = e.target.dispatchEvent;
+      const data = { pid, cartId };
+      socket.emit("addProduct", data);
     });
+  });
 });
 
-previousButton.addEventListener('click', () => {
-    page--;
-    socket.emit('nextPage', page);
+previousButton.addEventListener("click", () => {
+  page--;
+  socket.emit("nextPage", page);
 });
 
-nextButton.addEventListener('click', () => {
-    page++;
-    socket.emit('nextPage', page);
+nextButton.addEventListener("click", () => {
+  page++;
+  socket.emit("nextPage", page);
 });
 
-socket.on('succes', cid => {
-    cartId = cid;
-    Swal.fire({
-        title: 'Product agregado',
-    });
+socket.on("succes", (cid) => {
+  cartId = cid;
+  Swal.fire({
+    title: "Product agregado",
+  });
 });
