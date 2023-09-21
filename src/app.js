@@ -1,54 +1,51 @@
 //IMPORTACIONES
 import 'dotenv/config';
-
+import { app, io } from './config/config.js';
 import express from "express";
 import session from 'express-session';
 import { engine } from "express-handlebars";
-import { Server } from "socket.io";
 import { __dirname } from "./path.js";
 import path from "path";
-import mongoose from "mongoose";
 import cookieParser from 'cookie-parser';
 
 
 import messageModel from "./models/messages.models.js";
 import productModel from "./models/products.models.js";
 import cartModel from './models/carts.models.js';
+//import userModel from './models/users.models.js';
 
 
 import productRouter from "./routes/products.routes.js";
 import cartRouter from "./routes/carts.routes.js";
 import messageRouter from "./routes/messages.routes.js";
+import userRouter from './routes/users.routes.js';
+import sessionRouter from './routes/sessions.routes.js';
 
 //import ProductManager from "./controllers/ProductManager.js";
 
-
-//Inicializar el servidor
-const app = express();
-//Creacion del puerto
-const PORT = 4000;
 
 // const productManager = new ProductManager();
 
 let cartId;
 
-//Server
-const server = app.listen(PORT, () => {
-  console.log(`Server on PORT: ${PORT}`);
-  console.log(`http://localhost:${PORT}`);
-});
 
-const io = new Server(server);
 
-//Middlewares
-function auth(req, res, next) {
-  if (req.session.email === 'admin@admin.com') {
-    return next();
-  } else {
-    res.send('No tenés acceso a este contenido');
+const authAdmin = (req, res, next) => {
+  if (req.session.email == "admin@admin.com") {
+      return next() //Continua con la ejecucion normal de la ruta
   }
+  return res.send("No tenes acceso a este contenido")
 }
 
+const authUser = (req, res, next) => {
+  if (req.session.login) {
+      return next() //Continua con la ejecucion normal de la ruta
+  }
+  return res.send("No tenes acceso a este contenido")
+}
+
+
+//Middlewares
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(cookieParser(process.env.SIGNED_COOKIE));
@@ -64,12 +61,6 @@ app.engine('handlebars', engine());
 app.set('view engine', 'handlebars');
 app.set('views', path.resolve(__dirname, './views'));
 
-
-//Conexion a base de datos
-mongoose
-  .connect(process.env.MONGO_URL)
-  .then(() => console.log("BDD conectada"))
-  .catch((error) => console.log(`Error en la conexión a MongoDB Atlas: ${error}`));
 
 //Socket.io
 
@@ -133,6 +124,13 @@ io.on('connection', socket => {
 
 //Routes
 app.use('/static', express.static(path.join(__dirname, '/public')));
+app.use('/api/products', productRouter);
+app.use('/api/carts', cartRouter);
+app.use('/api/messages', messageRouter);
+app.use('/api/users', userRouter);
+app.use('/api/sessions', sessionRouter);
+
+
 
 app.get('/static', (req, res) => {
   res.render('index', {
@@ -217,7 +215,3 @@ app.get('/logout', (req, res) => {
     error ? console.log(error) : res.send('Salio de la sesión');
   });
 });
-
-app.use('/api/products', productRouter);
-app.use('/api/carts', cartRouter);
-app.use('/api/messages', messageRouter);
