@@ -53,7 +53,7 @@ app.use(cookieParser(process.env.SIGNED_COOKIE));
 app.use(session({
   store: MongoStore.create({
     mongoUrl: process.env.MONGO_URL,
-    mongoOptions: {useNewUrlParser: true, useUnifiedTopology: true},
+    mongoOptions: {usenewUrlParser: true, useUnifiedTopology: true},
     ttl: 120
   }),
     secret: process.env.SESSION_SECRET,
@@ -135,9 +135,9 @@ app.use('/api/carts', cartRouter);
 app.use('/api/users', userRouter);
 app.use('/api/messages', messageRouter);
 app.use('/api/sessions', sessionRouter);
-app.get('/*', (req, res) => {
-  res.send('Error 404: Page not Found');
-});
+// app.get('/*', (req, res) => {
+//   res.send('Error 404: Page not Found');
+// });
 
 
 
