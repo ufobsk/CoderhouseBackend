@@ -126,9 +126,12 @@ io.on('connection', socket => {
 app.use('/static', express.static(path.join(__dirname, '/public')));
 app.use('/api/products', productRouter);
 app.use('/api/carts', cartRouter);
-app.use('/api/messages', messageRouter);
 app.use('/api/users', userRouter);
+app.use('/api/messages', messageRouter);
 app.use('/api/sessions', sessionRouter);
+app.get('/*', (req, res) => {
+  res.send('Error 404: Page not Found');
+});
 
 
 
@@ -206,7 +209,7 @@ app.get('/login', (req, res) => {
   return res.send('Usuario logueado');
 });
 
-app.get('/admin', auth, (req, res) => {
+app.get('/admin', (req, res) => {
   res.send('Sos admin');
 });
 

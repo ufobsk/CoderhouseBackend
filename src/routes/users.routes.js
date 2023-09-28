@@ -3,6 +3,10 @@ import userModel from "../models/users.models.js";
 
 const userRouter = Router();
 
+userRouter.get('/register', (req, res) => {
+    res.render('register')
+});
+
 userRouter.post('/', async (req, res) => {
     const { first_name, last_name, email, password, age } = req.body;
 
