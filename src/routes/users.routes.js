@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { createHash } from "../utils/bcrypt.js";
 import userModel from "../models/users.models.js";
 
 const userRouter = Router();
@@ -11,12 +12,13 @@ userRouter.post('/', async (req, res) => {
     const { first_name, last_name, email, password, age } = req.body;
 
     try {
+        const hashPassword = createHash(password);
         const response = await userModel.create({
-            first_name,
-            last_name,
-            email,
-            password,
-            age
+            first_name: first_name,
+            last_name: last_name,
+            email: email,
+            password: hashPassword,
+            age: age
         })
         res.status(200).send({ mesnaje: 'Usuario creado', respuesta: response })
     } catch (error) {
