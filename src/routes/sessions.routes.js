@@ -3,7 +3,7 @@ import userModel from '../models/users.models';
 
 const sessionRouter = Router();
 
-sessionRouter.get('/login', async (req, res) => {
+sessionRouter.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
     try {
