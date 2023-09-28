@@ -53,7 +53,7 @@ app.use(cookieParser(process.env.SIGNED_COOKIE));
 app.use(session({
   store: MongoStore.create({
     mongoUrl: process.env.MONGO_URL,
-    mongoOptions: {usenewUrlParser: true, useUnifiedTopology: true},
+    mongoOptions: {useNewUrlParser: true, useUnifiedTopology: true},
     ttl: 120
   }),
     secret: process.env.SESSION_SECRET,
