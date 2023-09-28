@@ -50,6 +50,11 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(cookieParser(process.env.SIGNED_COOKIE));
 app.use(session({
+  store: MongoStore.create({
+    mongoUrl: process.env.MONGO_URL,
+    mongoOptions: {usenewUrlParser: true, useUnifiedTopology: true},
+    ttl: 120
+  }),
     secret: process.env.SESSION_SECRET,
     resave: true,
     saveUninitialized: true,
