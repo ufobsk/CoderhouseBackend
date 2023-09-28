@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createHash } from "../utils/bcrypt.js";
+import passport from "passport";
 import userModel from "../models/users.models.js";
 
 const userRouter = Router();
@@ -8,8 +8,8 @@ userRouter.get('/register', (req, res) => {
     res.render('register')
 });
 
-userRouter.post('/', async (req, res) => {
-    const { first_name, last_name, email, password, age } = req.body;
+userRouter.post('/register', passport.authenticate('register'), async (req, res) => {
+    
 
     try {
         const hashPassword = createHash(password);
