@@ -209,12 +209,15 @@ app.get('/login', (req, res) => {
   return res.send('Usuario logueado');
 });
 
-app.get('/admin', (req, res) => {
+app.get('/admin', authAdmin, (req, res) => {
   res.send('Sos admin');
 });
 
 app.get('/logout', (req, res) => {
-  req.session.destroy(error => {
-    error ? console.log(error) : res.send('Salio de la sesión');
-  });
+  req.session.destroy((error) => {
+      if (error)
+          console.log(error)
+      else
+          res.redirect('/')
+  })
 });
