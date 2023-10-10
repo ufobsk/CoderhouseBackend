@@ -1,9 +1,10 @@
 import { Router } from 'express';
 import userModel from '../models/users.models.js';
+import passport from 'passport';
 
 const sessionRouter = Router();
 
-sessionRouter.post('/login', async (req, res) => {
+sessionRouter.post('/login', passport.authenticate('login'), async (req, res) => {
     const { email, password } = req.body;
 
     try {
@@ -29,6 +30,25 @@ sessionRouter.post('/login', async (req, res) => {
     } catch (error) {
         res.status(400).send({ error:`Error en login ${error}`});
     }
+});
+
+sessionRouter.get('/testJWT', passport.authenticate('jwt', { session: true }), async (req, res) => {
+    res.status(200).send({ mensaje: req.user })
+    req.session.user = {
+        first_name: req.user.user.first_name,
+        last_name: req.user.user.last_name,
+        age: req.user.user.age,
+        email: req.user.user.email
+    }
+});
+
+sessionRouter.get('/github', passport.authenticate('github', { scope: ['user:email'] }), async (req, res) => {
+    res.status(200).send({ mensaje: 'Usuario creado' })
+});
+
+sessionRouter.get('/githubSession', passport.authenticate('github'), async (req, res) => {
+    req.session.user = req.user
+    req.status(200).send({ mensaje: 'Session creada' })
 });
 
 sessionRouter.post('/register', async (req, res) => {
