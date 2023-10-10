@@ -1,6 +1,7 @@
 import { Router } from "express";
 import passport from "passport";
 import userModel from "../models/users.models.js";
+import { createHash } from "../utils/bcrypt.js";
 
 const userRouter = Router();
 
