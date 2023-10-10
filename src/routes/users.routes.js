@@ -10,8 +10,6 @@ userRouter.get('/register', (req, res) => {
 });
 
 userRouter.post('/register', passport.authenticate('register'), async (req, res) => {
-    
-
     try {
         const hashPassword = createHash(password);
         const response = await userModel.create({
