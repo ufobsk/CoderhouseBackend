@@ -6,8 +6,31 @@ import { createHash, validatePassword } from "../utils/bcrypt.js";
 import userModel from "../models/users.models.js";
 
 const LocalStrategy = local.Strategy;
+const JWTStrategy = jwt.Strategy
+const ExtractJWT = jwt.ExtractJWT
 
 export const initializePassport = () => {
+
+
+  const cookieExtractor = req => {
+    console.log(req.cookies)
+    const token = req.cookies ? req.cookies.jwtCookie : {}
+    console.log(token)
+    return token
+  };
+
+  passport.use('jwt', new JWTStrategy({
+    jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]),
+    secretOrKey: proccess.env.JWT_SECRET
+  }, async (jwt_payload, done) => {
+    try {
+      console.log(jwt_payload)
+      return done(null, jwt_payload)
+    } catch (error) {
+      return done (error)
+    }
+  }));
+
   passport.use("register", new LocalStrategy( { passReqToCallback: true, usernameField: "email" }, async (req, username, password, done) => {
         const { first_name, last_name, email, age } = req.body;
         try {
