@@ -8,7 +8,7 @@ import { __dirname } from "./path.js";
 import path from "path";
 import cookieParser from 'cookie-parser';
 import MongoStore from 'connect-mongo';
-
+import { initializePassport } from './config/passport.js';
 
 import messageModel from "./models/messages.models.js";
 import productModel from "./models/products.models.js";
@@ -21,6 +21,7 @@ import cartRouter from "./routes/carts.routes.js";
 import messageRouter from "./routes/messages.routes.js";
 import userRouter from './routes/users.routes.js';
 import sessionRouter from './routes/sessions.routes.js';
+import passport from 'passport';
 
 //import ProductManager from "./controllers/ProductManager.js";
 
@@ -61,6 +62,10 @@ app.use(session({
     saveUninitialized: true,
   })
 );
+initializePassport()
+app.use(passport.initialize())
+app.use(passport.session())
+
 
 //Handlebars
 app.engine('handlebars', engine());
