@@ -36,3 +36,24 @@ export const getProduct = async (req, res) => {
         res.status(500).send({ error: `Error en consultar producto ${error}` })
     }
 }
+
+export const postProduct = async (req, res) => {
+
+    const { title, description, code, price, stock, category } = req.body
+
+    try {
+        const product = await productModel.create({ title, description, code, price, stock, category })
+
+        if (product) {
+            return res.status(201).send(product)
+        }
+
+        res.status(404).send({ error: "Producto no encontraod" })
+    } catch (error) {
+        if (error.code == 11000) {
+            return res.status(400).send({ error: `Llave duplicada` })
+        } else {
+            return res.status(500).send({ error: `Error en consultar producto ${error}` }) 
+        }
+    }
+}
