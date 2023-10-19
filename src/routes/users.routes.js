@@ -1,6 +1,6 @@
 import { Router } from "express";
 import passport from "passport";
-import userModel from "../models/users.models.js";
+import { userModel } from "../models/users.models.js";
 import { createHash } from "../utils/bcrypt.js";
 
 const userRouter = Router();
@@ -9,7 +9,7 @@ userRouter.get('/register', (req, res) => {
     res.render('register')
 });
 
-userRouter.post('/register', passport.authenticate('register'), async (req, res) => {
+userRouter.post('/', passport.authenticate('register'), async (req, res) => {
     try {
         const hashPassword = createHash(password);
         const response = await userModel.create({
