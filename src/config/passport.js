@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import local from "passport-local";
-import passport, { initialize } from "passport";
+import passport from "passport";
 import jwt, { ExtractJwt } from "passport-jwt";
 import GithubStrategy from "passport-github2";
 import { createHash, validatePassword } from "../utils/bcrypt.js";
