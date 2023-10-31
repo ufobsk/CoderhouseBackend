@@ -1,28 +1,11 @@
 import { Router } from "express";
 import passport from "passport";
-import { userModel } from "../models/users.models.js";
-import { createHash } from "../utils/bcrypt.js";
+import usersController from '../controllers/users.controller.js';
 
-const userRouter = Router();
+const routerUser = Router();
 
-userRouter.get('/register', (req, res) => {
-    res.render('register')
-});
+routerUser.post('/', passport.authenticate('register'), usersController.postUser);
 
-userRouter.post('/', passport.authenticate('register'), async (req, res) => {
-    try {
-        const hashPassword = createHash(password);
-        const response = await userModel.create({
-            first_name: first_name,
-            last_name: last_name,
-            email: email,
-            password: hashPassword,
-            age: age
-        })
-        res.status(200).send({ mesnaje: 'Usuario creado', respuesta: response })
-    } catch (error) {
-        res.status(400).send({ error: `Error al crear usuario: ${error}` });
-    }
-});
+routerUser.get('/', usersController.getUser);
 
-export default userRouter;
+export default routerUser;
