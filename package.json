@@ -1,8 +1,8 @@
 {
   "name": "practica-integradora-migracion",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Express server for product management",
+  "main": "src/app.js",
   "type": "module",
   "scripts": {
     "start": "node src/app.js",
