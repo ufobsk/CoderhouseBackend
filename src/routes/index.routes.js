@@ -1,23 +1,14 @@
-import { Router } from 'express';
-import routerCart from './carts.routes.js';
-import routerMessage from './messages.routes.js';
-import routerProd from './products.routes.js';
-import routerUser from './users.routes.js';
-import routerSession from './sessions.routes.js';
-import routerHandlebars from './handlebars.routes.js';
-import routerMailing from './mail.routes.js';
-import routerTicket from './tickets.routes.js';
+import express from 'express';
+import productRoutes from './productRoutes.js';
+import cartRoutes from './cartRoutes.js';
+import userRoutes from './userRoutes.js';
+import loggerTest from './loggerTest.js';
 
-const router = Router();
+const router = express.Router();
 
-router.use('/api/products', routerProd);
-router.use('/api/messages', routerMessage);
-router.use('/api/carts', routerCart);
-router.use('/api/users', routerUser);
-router.use('/api/sessions', routerSession);
-router.use('/api/mail', routerMailing);
-router.use('/api/tickets', routerTicket);
-
-router.use('/static', routerHandlebars);
+router.use('/api/products', productRoutes);
+router.use('/api/carts', cartRoutes);
+router.use('/users', userRoutes);
+router.use('/loggerTest', loggerTest);
 
 export default router;

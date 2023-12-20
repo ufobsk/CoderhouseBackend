@@ -1,48 +1,40 @@
-import { Schema, model } from 'mongoose';
-import cartModel from './carts.models.js';
+import mongoose from 'mongoose';
 
-const userSchemna = new Schema({
-	first_name: {
-		type: String,
-		required: true,
-	},
-	last_name: {
-		type: String,
-		required: true,
-	},
-	email: {
-		type: String,
-		required: true,
-		unique: true,
-	},
-	rol: {
-		type: String,
-		default: 'user',
-	},
-	cart: {
-		type: Schema.Types.ObjectId,
-		ref: 'carts',
-	},
-	age: {
-		type: Number,
-		required: true,
-	},
-	password: {
-		type: String,
-		required: true,
-	},
+const fileSchema = new mongoose.Schema({
+    name: String,
+    reference: String,
+}, {_id: false});
+
+const userSchema = new mongoose.Schema({
+    first_name: { type: String },
+    last_name: { type: String },
+    email: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    age: { type: Number },
+    password: {
+        type: String,
+        required: true
+    },
+    cart: { type: mongoose.Types.ObjectId, ref: 'Carts' },
+    role: {
+        type: String,
+        enum: ['admin', 'usuario', 'premium']
+    },
+    githubId: {
+        type: String,
+        unique: true,
+        sparse: true
+    },
+    username: String,
+    passwordResetToken: String, 
+    passwordResetExpires: Date, 
+    documents: [fileSchema], 
+    last_connection: Date,
 });
 
-userSchemna.pre('save', async function (next) {
-	// preconfiguración para generar un nuevo carrito al crear el usuario
-	try {
-		const newCart = await cartModel.create({});
-		this.cart = newCart._id;
-	} catch (error) {
-		next(error);
-	}
-});
-
-const userModel = model('users', userSchemna);
+const userModel = mongoose.model('User', userSchema);
 
 export default userModel;

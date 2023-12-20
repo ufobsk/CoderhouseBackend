@@ -1,40 +1,29 @@
-import { Router } from "express";
-import cartsController from '../controllers/carts.controller.js';
-import { authorization, passportError } from "../utils/messageErrors.js";
+import express from 'express';
+import {
+    createCart,
+    addProductToCart,
+    getCartById,
+    getProductsInCart,
+    updateProductQuantityInCart,
+    deleteProductFromCart,
+    clearCart,
+    updateCart,
+    purchaseCart,
+    deleteCart
+} from '../controllers/cartController.js';
+import { isAuthenticated } from '../controllers/authController.js';   
 
-const routerCart = Router();
+const router = express.Router();
 
-routerCart.get('/', cartsController.getCarts);
-routerCart.get('/:cid', cartsController.getCart);
-routerCart.post('/:cid/purchase', cartsController.purchaseCart);
-routerCart.post('/', cartsController.postCart);
-routerCart.put(
-	'/:cid/product/:pid',
-	passportError('jwt'),
-	authorization('user'),
-	cartsController.putProductToCart
-);
+router.post('/', createCart);
+router.post('/:cid/products/:pid', isAuthenticated, addProductToCart);
+router.get('/:cid', getCartById);
+router.get('/:cid/products', getProductsInCart);
+router.put('/:cid', isAuthenticated, updateCart);
+router.put('/:cid/products/:pid', isAuthenticated, updateProductQuantityInCart);
+router.delete('/:cid/products/:pid', isAuthenticated, deleteProductFromCart);
+router.delete('/:cid', isAuthenticated, clearCart);
+router.delete('/:cid/delete', isAuthenticated, deleteCart);
+router.post('/:cid/purchase', isAuthenticated, purchaseCart);
 
-routerCart.put(
-	'/:cid/products/:pid',
-	passportError('jwt'),
-	authorization('user'),
-	cartsController.putQuantity
-);
-
-routerCart.put(
-	'/:cid',
-	passportError('jwt'),
-	authorization('user'),
-	cartsController.putProductsToCart
-);
-
-routerCart.delete('/:cid', passportError('jwt'), authorization('user'), cartsController.deleteCart);
-
-routerCart.delete(
-	'/:cid/products/:pid',
-	passportError('jwt'),
-	authorization('user'),
-	cartsController.deleteProductFromCart
-);
-export default routerCart;
+export default router;

@@ -1,0 +1,47 @@
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        _id :
+          type: string
+        title:
+          type: string
+        price:
+          type: number
+        quantity:
+          type: number
+
+paths:
+  /api/products/{id}:
+    get:
+      summary: Obtiene un producto por ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID del producto
+          schema:
+            type: string
+      responses:
+        200:
+          description: El producto solicitado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        404:
+          description: Producto no encontrado
+        
+  /api/products:
+    get:
+      summary: Obtiene todos los productos
+      responses:
+        200:
+          description: Un array de productos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'

@@ -1,22 +1,12 @@
-import { Schema, model } from 'mongoose';
+import mongoose from 'mongoose';
 
-const ticketSchema = new Schema({
-	code: {
-		type: String,
-		required: true,
-	},
-	amount: {
-		type: Number,
-		required: true,
-	},
-	purchaser: {
-		type: String,
-		required: true,
-	},
+const ticketSchema = new mongoose.Schema({
+    code: { type: String, unique: true },
+    purchase_datetime: { type: Date, default: Date.now },
+    amount: Number,
+    purchaser: String,
 });
 
-ticketSchema.set('timestamps', true);
+const Ticket = mongoose.model('Ticket', ticketSchema);
 
-const ticketModel = model('tickets', ticketSchema);
-
-export default ticketModel;
+export default Ticket;
