@@ -1,117 +1,139 @@
-import productModel from "../models/products.models";
+import Product from '../models/products.models.js';
+import CustomError from '../services/errors/CustomError.js';
+import EErrors from '../services/errors/enums.js';
+import { generateProductErrorInfo } from '../services/errors/info.js';
+import Logger from '../services/logger.js'
 
-const getProducts = async (req, res) => {
-	const { limit, page, sort, category } = req.query;
+export const getProducts = async (req, res) => {
+    try {
+        const { page = 1, limit = 10, sort, query } = req.query;
+        const options = {
+            page: parseInt(page),
+            limit: parseInt(limit),
+            sort: sort ? { price: sort === 'asc' ? 1 : -1 } : undefined,
+        };
+        const filter = {};
 
-	const pag = page ? page : 1;
-	const lim = limit ? limit : 10;
-	const ord = sort === 'asc' ? 1 : 0;
-	const filter = category ? { category: category } : {};
+        if (query && query === 'category') {
+            const categoryName = req.query.categoryName;
+            if (categoryName) {
+                filter.category = categoryName;
+            }
+        }
 
-	try {
-		const products = await productModel.paginate(filter, {
-			limit: lim,
-			page: pag,
-			sort: { price: ord },
-		});
+        const result = await Product.paginate(filter, options);
 
-		if (products) {
-			return res.status(200).send(products);
-		}
-
-		res.status(404).send({ error: 'Productos no encontrados' });
-	} catch (error) {
-		res.status(500).send({ error: `Error en consultar productos ${error}` });
-	}
+        res.json({
+            status: 'success',
+            payload: result.docs,
+            totalPages: result.totalPages,
+            prevPage: result.prevPage,
+            nextPage: result.nextPage,
+            page: result.page,
+            hasPrevPage: result.hasPrevPage,
+            hasNextPage: result.hasNextPage,
+            prevLink: result.hasPrevPage ? `/api/products?page=${result.prevPage}&limit=${limit}&sort=${sort}&query=${query}` : null,
+            nextLink: result.hasNextPage ? `/api/products?page=${result.nextPage}&limit=${limit}&sort=${sort}&query=${query}` : null,
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 };
 
-const getProduct = async (req, res) => {
-	const { pid } = req.params;
+export const getProductById = async (req, res) => {
+    try {
+        const productId = req.params.pid;
+        const product = await Product.findById(productId);
 
-	try {
-		const product = await productModel.findById(pid);
+        if (!product) {
+            return res.status(404).json({ error: 'Producto no encontrado' });
+        }
 
-		if (product) {
-			return res.status(200).send(product);
-		}
-
-		res.status(404).send({ error: 'Producto no encontrado' });
-	} catch (error) {
-		res.status(500).send({ error: `Error en consultar producto ${error}` });
-	}
+        res.json(product);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 };
 
-const postProduct = async (req, res) => {
-	const { title, description, code, price, stock, category } = req.body;
+const validateProductData = (product) => {
+    const camposRequeridos = ['title', 'price', 'category'];
 
-	try {
-		const product = await productModel.create({
-			title,
-			description,
-			code,
-			price,
-			stock,
-			category,
-		});
+    for (let campo of camposRequeridos) {
+        if (!product[campo]) {
+            throw CustomError.createError({
+                name: EErrors.MISSING_REQUIRED_FIELDS.name,
+                message: generateProductErrorInfo(product),
+                code: EErrors.MISSING_REQUIRED_FIELDS.code,
+            });
+        }
+    }
+}
 
-		if (product) {
-			return res.status(201).send(product);
-		}
-	} catch (error) {
-		if (error.code == 11000) {
-			res.status(400).send({ error: `Llave duplicada` });
-		}
-
-		return res.status(500).send({ error: `Error en consultar producto ${error}` });
-	}
+export const addProduct = async (req, res, next) => {
+    try {
+        const productData = req.body;
+        validateProductData(productData);
+        const newProduct = await Product.create(productData);
+        res.json(newProduct);
+    } catch (error) {
+        next(error); 
+    }
 };
 
-const putProduct = async (req, res) => {
-	const { pid } = req.params;
-	const { title, description, code, price, stock, category } = req.body;
+export const updateProduct = async (req, res) => {
+    try {
+        const productId = req.params.pid;
+        const updatedFields = req.body;
+        const updatedProduct = await Product.findByIdAndUpdate(
+            productId,
+            updatedFields,
+            { new: true }
+        );
 
-	try {
-		const product = await productModel.findByIdAndUpdate(pid, {
-			title,
-			description,
-			code,
-			price,
-			stock,
-			category,
-		});
+        if (!updatedProduct) {
+            return res.status(404).json({ error: 'Producto no encontrado' });
+        }
 
-		if (product) {
-			return res.status(200).send(product);
-		}
-
-		res.status(404).send({ error: 'Producto no encontrado' });
-	} catch (error) {
-		res.status(500).send({ error: `Error en actualizar producto ${error}` });
-	}
+        res.json(updatedProduct);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 };
 
-const deleteProduct = async (req, res) => {
-	const { pid } = req.params;
+export const deleteProduct = async (req, res) => {
+    try {
+        const productId = req.params.pid;
+        const deletedProduct = await Product.findByIdAndDelete(productId);
 
-	try {
-		const product = await productModel.findByIdAndDelete(pid);
-		n;
-		if (product) {
-			return res.status(200).send(product);
-		}
+        if (!deletedProduct) {
+            return res.status(404).json({ error: 'Producto no encontrado' });
+        }
 
-		res.status(404).send({ error: 'Producto no encontrado' });
-	} catch (error) {
-		res.status(500).send({ error: `Error en actualizar producto ${error}` });
-	}
+        res.status(200).send("Producto eliminado correctamente.");
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 };
 
-const productsController = {
-	getProducts,
-	getProduct,
-	postProduct,
-	putProduct,
-	deleteProduct,
-};
+export const renderProducts = async (req, res) => {
+    try {
+        const { page = 1, limit = 5 } = req.query;
+        const options = {
+            page: parseInt(page),
+            limit: parseInt(limit),
+            lean: true
+        };
+        const result = await Product.paginate({}, options);
 
-export default productsController;
+        res.render('index', {
+            products: result.docs,
+            hasPrevPage: result.hasPrevPage,
+            hasNextPage: result.hasNextPage,
+            prevPage: result.prevPage,
+            nextPage: result.nextPage
+        });
+    } catch (error) {
+        Logger.error(error);
+        res.status(500).send('Error al obtener los productos');
+    }
+};
