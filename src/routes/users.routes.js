@@ -10,12 +10,12 @@ const upload = multer({ dest: 'documents/' });
 
 // Rutas para la interfaz de usuario
 
-router.get('/login', userController.showLogin); 
-router.get('/register', userController.showRegister); 
-router.post('/register', userController.postRegister); 
-router.get('/logout', userController.getLogout); 
+router.get('/users/login', userController.showLogin); 
+router.get('/users/register', userController.showRegister); 
+router.post('/users/register', userController.postRegister); 
+router.get('/users/logout', userController.getLogout); 
 
-router.post('/login', (req, res, next) => {
+router.post('/users/login', (req, res, next) => {
     passport.authenticate('local', (err, user, info) => {
         if (err) { 
             return next(err); 
@@ -32,21 +32,25 @@ router.post('/login', (req, res, next) => {
     })(req, res, next);
 });
 
-router.get('/github', passport.authenticate('github'));
+router.get('/users/github', passport.authenticate('github'));
 
-router.get('/github/callback', passport.authenticate('github', { 
+router.get('/users/github/callback', passport.authenticate('github', { 
     successRedirect: '/', 
     failureRedirect: '/users/login', 
 }));
 
 // Rutas para la API
 
-router.post('/api/register', userController.postRegisterAPI);
-router.post('/api/login', userController.postLoginAPI);
-router.get('/api/logout', userController.getLogoutAPI);
+router.post('/api/session/register', userController.postRegisterAPI);
+router.post('/api/session/login', userController.postLoginAPI);
+router.get('/api/session/logout', userController.getLogoutAPI);
+router.get('/api/session/current', userController.getCurrentSession);
 router.get('/api/github', passport.authenticate('github'));
-router.post('/password_recovery', userController.postPasswordRecovery);
-router.post('/reset_password/:token', userController.postResetPassword);
+router.post('/users/password_recovery', userController.postPasswordRecovery);
+router.post('/users/reset_password/:token', userController.postResetPassword);
 router.post('/api/:uid/documents', upload.array('documents'), userController.uploadDocuments); 
+router.get('/api/users', userController.getUsers);
+router.delete('/api/users', userController.deleteInactiveUsers);
+router.post('/api/cart/update', userController.updateCart);
 
 export default router;

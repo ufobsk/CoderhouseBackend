@@ -8,7 +8,7 @@ const router = express.Router();
 
 router.use('/api/products', productRoutes);
 router.use('/api/carts', cartRoutes);
-router.use('/users', userRoutes);
+router.use('/', userRoutes);
 router.use('/loggerTest', loggerTest);
 
 export default router;
