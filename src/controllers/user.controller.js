@@ -1,4 +1,5 @@
 import userModel from '../models/user.models.js';
+import Cart from '../models/carts.models.js';
 import bcrypt from 'bcrypt';
 import passport from 'passport';
 import CustomError from '../services/errors/CustomError.js';
@@ -6,7 +7,7 @@ import EErrors from '../services/errors/enums.js';
 import { generateUserErrorInfo } from '../services/errors/info.js';
 import Logger from '../services/logger.js';
 import crypto from 'crypto';
-import { recoveryEmail } from '../config/nodemailer.js';
+import { recoveryEmail, deletionEmail } from '../config/nodemailer.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -32,7 +33,7 @@ export const showRegister = (req, res) => {
 };
 
 const validateUserData = (user) => {
-    const camposRequeridos = ['email', 'password', 'first_name', 'last_name', 'age'];
+    const camposRequeridos = ['email', 'password', 'first_name', 'last_name'];
 
     for (let campo of camposRequeridos) {
         if (!user[campo]) {
@@ -55,18 +56,31 @@ export const postRegister = async (req, res, next) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    let role = email === process.env.ADMIN_EMAIL ? 'admin' : 'usuario'; 
+    let role = email === process.env.ADMIN_EMAIL ? 'admin' : 'usuario';
 
     const user = new userModel({ email, password: hashedPassword, first_name, last_name, age });
-    const savedUser = await user.save();  
+    user.last_connection = Date.now();
+
+    let cart = await Cart.findOne({ userId: user._id });
+    if (!cart) {
+        cart = await Cart.create({ userId: user._id, products: [] });
+    }
+
+    user.cart = cart._id;
+    req.session.cartId = cart._id;
+
+    console.log('Stored cartId: ' + req.session.cartId);
+
+    const savedUser = await user.save();
 
     req.logIn(user, (err) => {
         if (err) {
             return next(err);
         }
-        return res.json(savedUser); 
+        return res.json({ user: savedUser, cartId: cart._id });
     });
 };
+
 
 export const getLogout = (req, res) => {
     req.session.destroy((err) => {
@@ -92,19 +106,21 @@ export const postRegisterAPI = async (req, res, next) => {
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        let role = email === process.env.ADMIN_EMAIL ? 'admin' : 'usuario'; 
+        let role = email === process.env.ADMIN_EMAIL ? 'admin' : 'usuario';
 
         const user = new userModel({ email, password: hashedPassword, first_name, last_name, age });
-        const savedUser = await user.save(); 
+        user.last_connection = Date.now();
+        
+        const savedUser = await user.save();
 
-        res.status(201).json({ message: 'Usuario creado correctamente', user: savedUser }); 
+        res.status(201).json({ message: 'Usuario creado correctamente', user: savedUser });
     } catch (error) {
-        next(error); 
+        next(error);
     }
 };
 
 export const postLoginAPI = async (req, res, next) => {
-    passport.authenticate('local', (err, user, info) => {
+    passport.authenticate('local', async (err, user, info) => {
         if (err) {
             return res.status(500).json({ error: err.message });
         }
@@ -115,14 +131,31 @@ export const postLoginAPI = async (req, res, next) => {
             if (err) {
                 return res.status(500).json({ error: err.message });
             }
+
+            let cart = await Cart.findOne({ userId: user._id });
+            if (!cart) {
+                cart = await Cart.create({ userId: user._id, products: [] });
+            }
+
+            user.cart = cart;
+
             user.role = user.email === process.env.ADMIN_EMAIL ? 'admin' : 'usuario';
-            user.last_connection = Date.now(); 
+            user.last_connection = Date.now();
             await user.save();
-            
-            return res.status(200).json({ message: 'Inicio de sesión exitoso' });
+
+            return res.status(200).json({ message: 'Inicio de sesión exitoso', user, cartId: cart._id });
         });
     })(req, res, next);
 };
+
+export const getCurrentSession = (req, res, next) => {
+    if (req.user) {
+        res.json(req.user);
+    } else {
+        res.status(401).json({ error: 'No hay ninguna sesión activa' });
+    }
+};
+
 
 export const getLogoutAPI = (req, res) => {
     req.session.destroy(async (err) => {
@@ -148,7 +181,7 @@ export const postPasswordRecovery = async (req, res, next) => {
 
         const token = crypto.randomBytes(20).toString('hex');
         user.passwordResetToken = token;
-        user.passwordResetExpires = Date.now() + parseInt(tokenExpirationTime); 
+        user.passwordResetExpires = Date.now() + parseInt(tokenExpirationTime);
         await user.save();
 
         const link = `${recoveryURL}${token}`;
@@ -189,6 +222,19 @@ export const postResetPassword = async (req, res, next) => {
     }
 };
 
+export const updateCart = async (req, res) => {
+    let cart = req.session.cart;
+
+    cart = {
+        ...cart,
+        ...req.body,
+    };
+
+    req.session.cart = cart;
+
+    res.json({ success: true, cart });
+};
+
 export async function uploadDocuments(req, res, next) {
     try {
         const userId = req.params.uid;
@@ -206,3 +252,26 @@ export async function uploadDocuments(req, res, next) {
         next(error);
     }
 }
+
+export const getUsers = async (req, res, next) => {
+    try {
+        const users = await userModel.find({}, 'name email role');
+        res.json(users);
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const deleteInactiveUsers = async (req, res, next) => {
+    try {
+        const twoDaysAgo = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000);
+        const users = await userModel.find({ last_connection: { $lt: twoDaysAgo } });
+        users.forEach(async user => {
+            deletionEmail(user.email);
+            await userModel.deleteOne({ _id: user._id });
+        });
+        res.json({ message: 'Usuarios inactivos eliminados y notificados.' });
+    } catch (error) {
+        next(error);
+    }
+};

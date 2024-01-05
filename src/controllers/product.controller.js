@@ -6,20 +6,13 @@ import Logger from '../services/logger.js'
 
 export const getProducts = async (req, res) => {
     try {
-        const { page = 1, limit = 10, sort, query } = req.query;
+        const { page = 1, limit = 10, sort, category } = req.query;
         const options = {
             page: parseInt(page),
             limit: parseInt(limit),
             sort: sort ? { price: sort === 'asc' ? 1 : -1 } : undefined,
         };
-        const filter = {};
-
-        if (query && query === 'category') {
-            const categoryName = req.query.categoryName;
-            if (categoryName) {
-                filter.category = categoryName;
-            }
-        }
+        const filter = category ? { category } : {};
 
         const result = await Product.paginate(filter, options);
 
@@ -32,8 +25,8 @@ export const getProducts = async (req, res) => {
             page: result.page,
             hasPrevPage: result.hasPrevPage,
             hasNextPage: result.hasNextPage,
-            prevLink: result.hasPrevPage ? `/api/products?page=${result.prevPage}&limit=${limit}&sort=${sort}&query=${query}` : null,
-            nextLink: result.hasNextPage ? `/api/products?page=${result.nextPage}&limit=${limit}&sort=${sort}&query=${query}` : null,
+            prevLink: result.hasPrevPage ? `/api/products?page=${result.prevPage}&limit=${limit}&sort=${sort}&query=${category}` : null,
+            nextLink: result.hasNextPage ? `/api/products?page=${result.nextPage}&limit=${limit}&sort=${sort}&query=${category}` : null,
         });
     } catch (error) {
         res.status(500).json({ error: error.message });
