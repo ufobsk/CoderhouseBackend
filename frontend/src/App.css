@@ -1,0 +1,45 @@
+* {
+  margin: 0%;
+  padding: 0%;
+}
+
+body {
+  background-image: url(../public/img/background.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+/*Estilos HOME*/
+
+#greetingHome {
+  margin-bottom: 2rem;
+  text-align: center;
+  color: #fff;
+}
+
+.ListGroup {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    flex-direction: row;
+}
+
+#SectionHome{
+  display: flex;
+  width: auto;
+  height: 500px;
+}
+
+#SectionHome img{
+  width: 0px;
+  flex-grow: 1;
+  object-fit: cover;
+  transition: .5s ease;
+}
+
+#SectionHome img:hover{
+  cursor: pointer;
+  width: 300px;
+  opacity: 1;
+  filter: contrast(120%);
+}

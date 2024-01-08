@@ -1,0 +1,63 @@
+div h3 {
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  font-size: 35px;
+  font-weight: bold;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+h4 {
+  color: #fff;
+  font-size: 30px;
+  font-weight: bold;
+}
+
+div button {
+  color: #ecae03;
+  background-color: black;
+}
+
+.Cart {
+  margin-top: 20px;
+}
+
+.Cart-total-label {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  margin-right: 10px;
+}
+
+.Cart-total-amount {
+  font-size: 20px;
+  font-weight: bold;
+  color: #ecae03;
+}
+
+.Cart-empty-link {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #ecae03;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
+  cursor: pointer;
+  text-decoration: none;
+  margin-top: 10px;
+}
+
+.Cart-buttons {
+  margin-top: 10px;
+}
+
+.Cart-buttons > * {
+  margin-left: 10px;
+}
+
+.Option {
+  display: flex-end;
+}

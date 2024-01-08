@@ -1,0 +1,27 @@
+.NavLinkStyle {
+    font-size: large;
+    text-decoration: none;
+    padding: 0;
+    margin-left: 2rem;
+    margin-right: 2rem;
+    border: none;
+    color: #e6e6e6;
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .NavLinkStyle:hover {
+    font-weight: bold;
+    transform: scale(1.1);
+    color: #e0a841;
+  }
+  /* Estilos del LOGO NAVBAR*/
+  .BskBeatsLogo {
+    height: 70px;
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .BskBeatsLogo:hover {
+    height: 70px;
+    opacity: 0.5;
+    transform: scale(1.1);
+  }

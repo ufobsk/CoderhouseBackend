@@ -1,0 +1,32 @@
+.CardItem {
+  display: inline-flex;
+  flex-direction: column;
+  width: 300px;
+  height: 534px;
+  margin: 20px;
+  background-color: rgb(236, 235, 235);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease-in-out;
+}
+
+.CardItem:hover {
+  transform: translateY(-5px);
+  box-shadow: 2px 2px 20px rgba(0, 0, 0, 0.3);
+  background-color: rgb(221, 221, 221);
+}
+
+.CardItem .Header .ItemHeader {
+  font-size: large;
+}
+
+#cardTitle {
+  font-size: large;
+}
+
+.ItemImg {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

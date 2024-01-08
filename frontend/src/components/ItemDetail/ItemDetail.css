@@ -1,0 +1,84 @@
+.ItemDetailContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+.CardItemDetail {
+  display: inline-flex;
+  flex-direction: column;
+  width: 600px;
+  height: 750px;
+  margin: 20px;
+  background-color: rgb(236, 235, 235);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease-in-out;
+}
+
+.CardItemDetail:hover {
+  transform: translateY(-5px);
+  box-shadow: 2px 2px 20px rgba(0, 0, 0, 0.3);
+  background-color: rgb(221, 221, 221);
+}
+
+.ItemImg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+picture {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.Info {
+  padding: 6px;
+  margin: 0px;
+  text-align: center;
+  font-size: 18px;
+}
+
+.Header {
+  background-color: #ad863c;
+  color: white;
+  padding: 10px;
+  text-align: center;
+  border-radius: 10px 10px 0px 0px;
+  font-size: 50px;
+}
+
+.ItemFooter {
+  color: white;
+  padding: 10px;
+  text-align: center;
+  border-radius: 0px 0px 10px 10px;
+}
+
+.Option {
+  background-color: #272727;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.Option:hover {
+  font-weight: bold;
+  transform: scale(1.1);
+  color: #bdb147;
+}
+
+#cardTitle {
+  font-size: large;
+}
+
+.itemDetailSection {
+  flex-grow: 1;
+}

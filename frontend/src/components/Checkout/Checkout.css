@@ -1,0 +1,72 @@
+.Ticket {
+  background-color: #e4aa3eb0;
+  border: 3px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 20px;
+}
+
+.Ticket h3 {
+  display: flex;
+  justify-content: center;
+  font-size: 25px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.Ticket p {
+  margin: 5px 0;
+}
+
+.Ticket h4 {
+  display: flex;
+  justify-content: center;
+  font-weight: bolder;
+  font-size: 20px;
+  margin-top: 20px;
+}
+
+.CheckoutTitle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 35px;
+  color: #707070;
+}
+
+#itemName {
+  color: #f8f8f8;
+  font-weight: bold;
+  margin-top: 3rem;
+}
+
+.Generating {
+  display: flex;
+  justify-content: center;
+  padding-top: 50px;
+  color: #fefdff;
+}
+
+.Ordencompra {
+  display: flex;
+  justify-content: center;
+  padding-top: 50px;
+  color: #fefdff;
+}
+
+.ItemContain {
+  background-color: #2e2e2e;
+  border-radius: 8px;
+}
+
+.ItemContain p {
+  color: #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.Contain {
+  background-color: #2e2e2e;
+}
