@@ -9,7 +9,6 @@ import { CartProvider } from './context/cartContext.jsx';
 import { Login } from './components/Login/Login.jsx';
 import { Register } from './components/Register/Register.jsx';
 import { NewProduct } from './components/newProduct/newProduct.jsx';
-import FinalPag from './components/FinalPag/FinalPag.jsx';
 
 
 function App() {

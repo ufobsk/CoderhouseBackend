@@ -1,8 +1,13 @@
+import 'dotenv/config'; //lo importo para el ejemplo
 import bcrypt from 'bcrypt';
 
-// encriptar contraseña
-export const createHash = password =>
-	bcrypt.hashSync(password, bcrypt.genSaltSync(parseInt(process.env.SALT)));
+//encriptar la contraseña
+export const createHash = (password) => bcrypt.hashSync(password, bcrypt.genSaltSync(parseInt(process.env.SALT)));
 
-export const validatePassword = (passwordSended, passwordBBDD) =>
-	bcrypt.compareSync(passwordSended, passwordBBDD);
+const hashPasword = createHash('Coder');
+// console.log(hashPasword )
+
+//Validar contraseña encriptada
+export const validatePassword = (passwordSend, passwordBDD) => bcrypt.compareSync(passwordSend, passwordBDD);
+
+// console.log(validatePassword('Coder', hashPasword ))

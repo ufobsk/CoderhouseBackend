@@ -1,48 +1,45 @@
 import winston from 'winston';
 
-const customOptionsLevels = {
-    levels: {
-        fatal: 0,
-        error: 1,
-        warn: 2,
-        info: 3,
-        http: 4,
-        debug: 5,
-    },
-    colors: {
-        fatal: 'red',
-        error: 'magenta',
-        warn: 'yellow',
-        info: 'blue',
-        http: 'green',
-        debug: 'white',
-    }
+//se crea una cn=onstante con los lvls y colores
+const customLevelsOptions = {
+	levels: {
+		fatal: 0,
+		error: 1,
+		warning: 2,
+		info: 3,
+		debug: 4,
+	},
+	colors: {
+		fatal: 'red',
+		error: 'yellow',
+		warning: 'black',
+		info: 'green',
+		debug: 'magenta',
+	},
 };
 
-const getLogLevel = () => {
-    const env = process.env.NODE_ENV || 'development';
-    return env === 'development' ? 'debug' : 'info';
-};
-
-const logger = winston.createLogger({
-    levels: customOptionsLevels.levels,
+export const logger = winston.createLogger({
+    levels: customLevelsOptions.levels, //defino mis lvls
     transports: [
-        new winston.transports.File({
-            filename: './src/logs/errors.log',
-            level: 'warn',
+        new winston.transports.Console({ 
+            level: 'info', //el lvl debe conicidir con el que muestro en la informacion
+            //agregamos el formato
             format: winston.format.combine(
-                winston.format.timestamp(),
-                winston.format.json(),
-            ),
+                winston.format.colorize({colors: customLevelsOptions.colors}),
+                winston.format.simple()
+            )
         }),
-        new winston.transports.Console({
-            level: getLogLevel(), 
-            format: winston.format.combine(
-                winston.format.colorize({ colors: customOptionsLevels.colors }),
-                winston.format.simple(),
-            ),
-        }),
-    ],
+
+        new winston.transports.File({ 
+            filename: './logs/errors.log', 
+            level: 'warning',
+            format: winston.format.simple()
+        })
+    ]
 });
 
-export default logger;
+export const addLogger = (req, res, next) => {
+    req.logger = logger;
+    req.logger.info(`Request ${req.method} - ${req.url} - Date: ${new Date().toLocaleString()}`);
+    next();
+};
