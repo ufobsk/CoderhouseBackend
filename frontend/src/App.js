@@ -6,6 +6,8 @@ import Cart from './components/Cart/Cart';
 import Checkout from './components/Checkout/Checkout';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { CartProvider } from './context/cartContext.jsx';
+import { Login } from './components/Login/Login.jsx';
+import { Register } from './components/Register/Register.jsx';
 
 
 function App() {
