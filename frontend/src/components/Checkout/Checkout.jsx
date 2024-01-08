@@ -4,11 +4,11 @@ import { addDoc, collection, Timestamp } from 'firebase/firestore';
 import { db } from '../../services/Firebase/firebaseConfig';
 import CheckoutForm from '../CheckoutForm/CheckoutForm';
 import { CartContext } from '../../context/cartContext.jsx';
+import { Navigate } from "react-router-dom";
 
 const Checkout = () => {
     const [loading, setLoading] = useState(false)
     const [orderId, setOrderId] = useState('')
-
     const { cart, total, clearCart } = useContext(CartContext)
 
     const redirect = () => {
@@ -81,7 +81,9 @@ const Checkout = () => {
         </div>
         <h3 className='CheckoutTitle'>Checkout</h3>
         <CheckoutForm onConfirm={createOrder} />
+        <Navigate to = {"/FinalPag/" + orderId } />
       </div>
+
     )
 }
 

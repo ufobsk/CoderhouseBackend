@@ -9,6 +9,7 @@ import { CartProvider } from './context/cartContext.jsx';
 import { Login } from './components/Login/Login.jsx';
 import { Register } from './components/Register/Register.jsx';
 import { NewProduct } from './components/newProduct/newProduct.jsx';
+import FinalPag from './components/FinalPag/FinalPag.jsx';
 
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
           <Route path={"/login"} element={<Login />} />
           <Route path={"/register"} element={<Register />} />
           <Route path={"/newProduct"} element={<NewProduct />} />
+          <Route path={"/FinalPag/:orderId"} element={<FinalPag />} />
           <Route path="/checkout" element={<Checkout/>}/>
           <Route path="*" element={<h1>404 NOT FOUND</h1>}/>
         </Routes>
