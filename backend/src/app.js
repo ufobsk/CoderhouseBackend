@@ -64,7 +64,7 @@ app.use(cookieParser(process.env.COOKIE_SECRET));
 const MongoDBSessionStore = MongoDBStore(session);
 
 const store = new MongoDBSessionStore({
-    uri: process.env.MONGO_URL,
+    url: process.env.MONGO_URL,
     collection: "session",
 });
 
